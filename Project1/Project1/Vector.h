@@ -11,12 +11,13 @@ public:
 			element[i] = v.element[i];
 	}
 	friend std::ostream& operator<<(std::ostream& os, const Vector& v);
-
-	double& operator[](int n);
+	
+	
+	double& operator[](int n); 
 	
 	Vector& operator=(const Vector& v);
-	Vector operator+(const Vector& v);
-	Vector operator-(const Vector& v);
+	Vector operator+(const Vector& v)const;
+	Vector operator-(const Vector& v)const;
 	Vector operator*(const double c) const;
 	Vector& operator+=(const Vector& v);
 	Vector& operator-=(const Vector& v);
@@ -29,7 +30,9 @@ public:
 	Vector normalize()const;
 
 
-	int get_dim() { return dim; }
+	int get_dim() const{ return dim; }
+
+	void print_vec()const;
 
 	~Vector() {
 		if (element) {

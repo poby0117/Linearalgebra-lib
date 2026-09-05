@@ -3,40 +3,39 @@
 #include "Vector.h"
 
 double& Vector::operator[](int n) {
+	if (n < 0 || n >= dim) throw std::out_of_range("Out of Range");
 	return element[n];
 }
 
 Vector& Vector::operator=(const Vector& v) {
-	if (v.dim == dim && this != &v) {
-		for (int i = 0; i < dim; i++) {
-			element[i] = v.element[i];
-		}
-	}
-	else std::cout << "Different Dimension." << "\n";
+	if (this == &v) return *this;
+	if (v.dim != dim)
+		throw std::invalid_argument("Different Dimension: op =");
 
+	for (int i = 0; i < dim; i++) 
+		element[i] = v.element[i];
+		
 	return *this;
 }
 
-Vector Vector::operator+(const Vector& v) {
-	if (v.dim == dim) {
-		Vector w(v.dim);
+Vector Vector::operator+(const Vector& v) const{
+	if(v.dim!=dim)
+		throw std::invalid_argument("Different Dimension: op +");
+	
+	Vector w(v.dim);
 		for (int i = 0; i < w.dim; i++)
 			w.element[i] = element[i] + v.element[i];
 		return w;
-	}
-	else std::cout << "Different Dimension" << "\n";
-	return *this;
 }
 
-Vector Vector::operator-(const Vector& v) {
-	if (v.dim == dim) {
-		Vector w(v.dim);
-		for (int i = 0; i < w.dim; i++)
-			w.element[i] = element[i] - v.element[i];
-		return w;
-	}
-	else std::cout << "Different Dimension" << "\n";
-	return *this;
+Vector Vector::operator-(const Vector& v) const{
+	if (v.dim != dim)
+		throw std::invalid_argument("Different Dimension: op -");
+
+	Vector w(v.dim);
+	for (int i = 0; i < w.dim; i++)
+		w.element[i] = element[i] - v.element[i];
+	return w;
 }
 
 Vector Vector::operator*(const double c) const{
@@ -51,20 +50,20 @@ Vector operator*(const double c, const Vector& v) {
 }
 
 Vector& Vector::operator+=(const Vector& v) {
-	if (dim == v.dim) {
-		for (int i = 0; i < dim; i++)element[i] += v.element[i];
-	}
-	else std::cout << "Different Dimension" << "\n";
+	if (v.dim != dim)
+		throw std::invalid_argument("Different Dimension: op +=");
+
+	for (int i = 0; i < dim; i++)element[i] += v.element[i];
 
 	return *this;
 }
 
 Vector& Vector::operator-=(const Vector& v) {
-	if (dim == v.dim) {
-		for (int i = 0; i < dim; i++)element[i] -= v.element[i];
-	}
-	else std::cout << "Different Dimension" << "\n";
+	if (v.dim != dim)
+		throw std::invalid_argument("Different Dimension: op -=");
 
+	for (int i = 0; i < dim; i++)element[i] -= v.element[i];
+	
 	return *this;
 }
 
@@ -79,16 +78,14 @@ class Vector {
 */
 
 double Vector::dot(const Vector& v) const {
+	if (v.dim != dim)
+		throw std::invalid_argument("Different Dimension: dot product");
+
 	double result = 0.0;
-	if (v.dim == dim) {
-		for (int i = 0; i < dim; i++)
-			result += element[i] * v.element[i];
-		return result;
-	}
-	else std::cout<< "Different Dimension"<<"\n";
-	return 999999.9;
 
-
+	for (int i = 0; i < dim; i++)
+		result += element[i] * v.element[i];
+	return result;
 }
 
 double Vector::norm() const{
@@ -96,19 +93,29 @@ double Vector::norm() const{
 }
 
 Vector Vector::normalize() const{
-	return (1 / norm()) * (*this);
+	double d = norm();
+	if (d == 0) throw std::invalid_argument("Cannot normalize zero vec");
+	return (1.0 / d) * (*this);
 }
 
 Vector Vector::cross_product(const Vector& v) const{
-	if (dim == 3 && v.dim == 3) {
-		Vector w(3);
-		w[0] = element[1] * v.element[2] - element[2] * v.element[1];
-		w[1] = element[2] * v.element[0] - element[0] * v.element[2];
-		w[2] = element[0] * v.element[1] - element[1] * v.element[0];
-		return w;
+	if (v.dim != 3 || dim != 3)
+		throw std::invalid_argument("Different Dimension: cross product");
+
+	Vector w(3);
+	w[0] = element[1] * v.element[2] - element[2] * v.element[1];
+	w[1] = element[2] * v.element[0] - element[0] * v.element[2];
+    w[2] = element[0] * v.element[1] - element[1] * v.element[0];
+	return w;
+}
+
+void Vector::print_vec() const{
+	int i = 0;
+	std::cout << "(";
+	for (; i < dim-1; i++) {
+		std::cout << element[i] << "; ";
 	}
-	else std::cout << "Different Dimension" << "\n";
-	return *this;
+	std::cout << element[i] <<")"<< "\n";
 }
 
 std::ostream& operator<<(std::ostream& os, const Vector& v) {
@@ -119,4 +126,4 @@ std::ostream& operator<<(std::ostream& os, const Vector& v) {
 	}
 	os << ")";
 	return os;
-}
+} //이건 AI 코드,,, 추후 공부하겠습니다.

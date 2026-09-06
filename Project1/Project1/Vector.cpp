@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include "Vector.h"
+constexpr double eps = 1e-10;
 
 double& Vector::operator[](int n) {
 	if (n < 0 || n >= dim) throw std::out_of_range("Out of Range");
@@ -94,7 +95,7 @@ double Vector::norm() const{
 
 Vector Vector::normalize() const{
 	double d = norm();
-	if (d == 0) throw std::invalid_argument("Cannot normalize zero vec");
+	if (std::abs(d) <eps) throw std::invalid_argument("Cannot normalize zero vec");
 	return (1.0 / d) * (*this);
 }
 

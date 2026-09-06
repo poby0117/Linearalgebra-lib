@@ -1,11 +1,20 @@
 #pragma once
 #include <iostream>
 class Vector {
-	double* element;
 	int dim;
+	double* element;
 
 public:
-	Vector(int n):element(new double[n]), dim(n){}
+	Vector(int n) {
+		if (n < 0) throw std::invalid_argument("Vector Dimension must be positive");
+		dim = n;
+		element = new double[n];
+	}
+	/*
+	Vector(int n):dim(validate dim(n)), element(new double[dim]){}
+	validate함수는 n의 범위를 올바른지 확인하는 함수. 
+	initialize 순서는 생성자(int n): <- 여기 뒤에 오는 순서가 아닌 private에 선언된 순서.
+	*/
 	Vector(const Vector& v) :element(new double[v.dim]), dim(v.dim) {
 		for (int i = 0; i < dim; i++)
 			element[i] = v.element[i];

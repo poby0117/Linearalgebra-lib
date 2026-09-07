@@ -102,27 +102,43 @@ Matrix Matrix::inverse()const {
 Matrix Matrix::rref()const {
 	Matrix t(row, col);
 	t = *this;
-
-	for (int i = 0; i < row - 1; i++) { 
-		for (int j = i+1; j < row ; j++) { // 현재 row보다 아래에 있는 row에 대해 연산
-			for (int k = 0; k < col; k++) { //해당 row에 있는 모든 성분에 대해 elimination
-				double div1 = t[j][0] / t[i][0];
-				t[j][k] = t[j][k]  - t[i][k]* div1;
-				if (std::abs(t[j][k]) < eps) t[j][k] = 0; //부동소수점 오차 제거; 연산량은 늘어나지만... 일단은
+	int pivot_row = 0, pivot_col = 0;
+	
+	for (; pivot_col < col && pivot_row < row; pivot_col++) {
+		int flag = -1;
+		for (int i = pivot_row; i < row; i++) {
+			if (std::abs(t[i][pivot_col]) >eps) {
+				flag = i;
+				break;
 			}
-
-			int non_zero;
-			for (int k = 0; k < col; k++) { //pivot을 1로 만들고 나머지 성분 pivot으로 나눠주기
-				if (t[j][k] != 0) {
-					non_zero = k;
-					for (int l = k; l < col; l++) {
-						double div = t[j][k];
-						t[j][l] /= div;
-						if (std::abs(t[j][l]) < eps) t[j][l] = 0; //오차 제거;
-					}
-					break;
-				}
+		}
+		if (flag == -1) continue;
+		t.switch_row(pivot_row, flag);
+		
+		for (int j = pivot_row + 1; j < row; j++) {
+			double div = t[j][pivot_col] / t[pivot_row][pivot_col];
+			for (int k = pivot_col; k < col; k++) {
+				t[j][k] -= div * t[pivot_row][k];
+				if (std::abs(t[j][k]) < eps) t[j][k] = 0;
 			}
+		}
+		pivot_row++;
+	}
+
+	for (; pivot_row >= 0; pivot_row--) {
+		double div1 = t[pivot_row][pivot_col];
+		for (int i = pivot_col; i <= col; i++) {
+			t[pivot_row][i] /= div1;
+			if (std::abs(t[pivot_row][i]) < eps) t[pivot_row][i] = 0;
+		}
+
+		for (int i = pivot_row - 1; i >= 0; i--) {
+			double div = t[i][pivot_col] / t[pivot_row][pivot_col];
+			for (int j = pivot_col; j <= col; j++) {
+				t[i][j] -= div * t[i][j];
+				if (std::abs(t[i][j]) < eps) t[i][j] = 0;
+			}
+			pivot_col--;
 		}
 	}
 	return t;
@@ -153,4 +169,8 @@ double Matrix::det()const {
 	//after rref;
 }
 
+void switch_row(int a, int b) {
+	// a==b 그대로 break;
+	//다르면 switch
+}
 

@@ -37,6 +37,7 @@ public:
 	double det()const;
 	double trace()const;
 	
+	void switch_row(int a, int b);
 	void print_matrix();
 
 	~Matrix() {

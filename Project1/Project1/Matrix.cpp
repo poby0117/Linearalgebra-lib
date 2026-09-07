@@ -119,7 +119,15 @@ Matrix Matrix::inverse()const {
 		}
 	}
 	t = t.rref();
-	
+	for (int i = 0; i < row; i++) {
+		for (int j = 0; j < col; j++) {
+			double flag = (i == j) ? 1.0 : 0.0;
+
+			if (std::abs(t[i][j] - flag) > eps)
+				throw std::invalid_argument("Matrix is singular.");
+		}
+	}
+
 	Matrix inverse_mat(row, col);
 	for (int i = 0; i < row; i++) {
 		for (int j = col; j < 2 * col; j++) {

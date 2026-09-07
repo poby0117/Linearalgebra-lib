@@ -8,7 +8,7 @@ class Matrix {
 
 public:
 	Matrix(int r, int c) {
-		if (row <= 0 || col <= 0)
+		if (r <= 0 || c <= 0)
 			throw std::invalid_argument("Rows and Cols must be positive.");
 		row = r; col = c;
 		element = new double[row * col];
@@ -20,7 +20,7 @@ public:
 	}
 			
 	double* operator[](const int n);
-
+	
 	Matrix operator+(const Matrix& m)const;
 	Matrix operator-(const Matrix& m)const;
 	Matrix operator*(const Matrix& m)const;
@@ -28,21 +28,22 @@ public:
 	Matrix& operator+=(const Matrix& m);
 	Matrix& operator-=(const Matrix & m);
 	Matrix& operator*=(const double c);
+	Matrix& operator=(const Matrix& m);
 
 	Matrix transpose()const;
 	Matrix inverse()const;
 	Matrix rref()const;
-	Matrix I_Matrix(const int n)const;
 
 	double det()const;
 	double trace()const;
 	
 	void switch_row(int a, int b);
-	void print_matrix();
 
+	double get_col() { return col; }
 	~Matrix() {
 		delete[] element;
 	}
 };
 
 Matrix operator*(const double c, const Matrix& m);
+Matrix I_Matrix(const int n);

@@ -8,6 +8,11 @@ double& Vector::operator[](int n) {
 	return element[n];
 }
 
+const double& Vector::operator[](const int n) const{
+	if (n < 0 || n >= dim)throw std::out_of_range("Out of Range");
+	return element[n];
+}
+
 Vector& Vector::operator=(const Vector& v) {
 	if (this == &v) return *this;
 	if (v.dim != dim)

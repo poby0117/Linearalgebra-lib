@@ -1,6 +1,6 @@
 #pragma once
 #include<iostream>
-
+#include "Vector.h"
 class Matrix {
 	int row;
 	int col;
@@ -20,7 +20,8 @@ public:
 	}
 			
 	double* operator[](const int n);
-	
+	const double* operator[](const int n)const;
+
 	Matrix operator+(const Matrix& m)const;
 	Matrix operator-(const Matrix& m)const;
 	Matrix operator*(const Matrix& m)const;
@@ -33,6 +34,8 @@ public:
 	Matrix transpose()const;
 	Matrix inverse()const;
 	Matrix rref()const;
+
+	Vector Ax(const Vector&v)const;
 
 	double det()const;
 	double trace()const;

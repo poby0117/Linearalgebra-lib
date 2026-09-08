@@ -23,7 +23,8 @@ public:
 	
 	
 	double& operator[](int n); 
-	
+	const double& operator[](const int n)const;
+
 	Vector& operator=(const Vector& v);
 	Vector operator+(const Vector& v)const;
 	Vector operator-(const Vector& v)const;

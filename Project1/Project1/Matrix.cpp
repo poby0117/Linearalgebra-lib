@@ -1,10 +1,16 @@
 #include "Matrix.h"
 #include <iostream>
+#include "Vector.h"
 constexpr double eps = 1e-10;  //0과 비교할 때 부동소수점 오차로 인한 오류 방지;
 
 double* Matrix:: operator[](const int n) {
 	if (n < 0 || n >= row)
-		throw std::out_of_range("Out of range");
+		throw std::out_of_range("Out of Range");
+	return element + col * n;
+}
+const double* Matrix::operator[](const int n)const{
+	if (n < 0 || n >= row)
+		throw std::out_of_range("Out of Range");
 	return element + col * n;
 }
 
@@ -260,7 +266,6 @@ double Matrix::det()const {
 	else return -result;
 }
 
-
 void Matrix::switch_row(int a, int b) {
 	if (a < 0 || b < 0 || a >= row || b <= 0) throw std::out_of_range("Out Of Range.");
 
@@ -273,4 +278,31 @@ void Matrix::switch_row(int a, int b) {
 		*(element + b * col + i) = temp;
 	}
 }
+
+Vector Matrix::Ax(const Vector&v)const {
+	if (col != v.get_dim()) throw std::invalid_argument("Column and dimension must match.");
+	Vector w(row);
+
+
+	for (int i = 0; i < row; i++) {
+		double c = 0.0;
+		for (int j = 0; j < col; j++) {
+			c += *(element + i * col + j) * v[i];
+		}
+		w[i] = c;
+	}
+		
+	return w;
+}
+
+
+
+
+
+
+
+
+
+
+
 
